@@ -3,7 +3,7 @@
 #/*---- Part 1：程式基本設定 ----*/
 # 伺服器常態設定
 TIME_ZONE = 'Asia/Taipei' # 時區設定
-PIXMICAT_LANGUAGE = '' # 語系語定
+PIXMICAT_LANGUAGE = 'zh-tw' # 語系語定
 
 # FileIO設定
 FILEIO_BACKEND = '' # Add 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'.
@@ -13,6 +13,13 @@ IMAGESHACK_API_KEY = '' # Only ImageShack need.
 TITLE = 'Pixmicat!-PIO' # 網頁標題
 ADMIN_PASS = 'futaba' # 管理員密碼
 
-#管理員キャップ(Cap)設定 (啟用條件：開啟使用；名稱輸入識別名稱，E-mail輸入#啟動密碼)
-CAP_ENABLE = 1 #是否使用管理員キャップ (使用：1 不使用：0)
+# 附加圖檔限制
+MAX_KB = 1024 # 附加圖檔上傳容量限制KB (GAE內定為最高1MB)
+
+# 預覽圖片相關限制
+MAX_W = 250 # 討論串本文預覽圖片寬度 (超過則自動縮小)
+MAX_H = 250 # 討論串本文預覽圖片高度
+MAX_RW = 125 # 討論串回應預覽圖片寬度 (超過則自動縮小)
+MAX_RH = 125 # 討論串回應預覽圖片高度
+
 

@@ -15,4 +15,5 @@ class WelcomeController(BaseController):
         import settings
         tz = tz_helper.timezone(settings.TIME_ZONE)
         now = datetime.datetime.now(tz)
+        self.title = settings.TITLE
         #self.render(text='Exception: %s' % now)
