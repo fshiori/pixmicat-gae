@@ -13,3 +13,6 @@ IMAGESHACK_API_KEY = '' # Only ImageShack need.
 TITLE = 'Pixmicat!-PIO' # 網頁標題
 ADMIN_PASS = 'futaba' # 管理員密碼
 
+#管理員キャップ(Cap)設定 (啟用條件：開啟使用；名稱輸入識別名稱，E-mail輸入#啟動密碼)
+CAP_ENABLE = 1 #是否使用管理員キャップ (使用：1 不使用：0)
+
