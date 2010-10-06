@@ -3,7 +3,7 @@ from gaeo.model import BaseModel, SearchableBaseModel
 
 class Pixmicat(BaseModel):
     username = db.StringProperty()
-    uid = db.StringProperty()
+    postid = db.StringProperty()
     email = db.StringProperty()
     title = db.StringProperty()
     content = db.TextProperty()
