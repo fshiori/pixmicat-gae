@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
+import datetime
+
 import cgi
 
 from google.appengine.ext import db
 
 from gaeo.controller import BaseController
+
+import tz_helper
+import settings
+from model.pixmicat import Pixmicat
 
 def _processUsername(username):
     import string
@@ -32,9 +38,39 @@ def _processPostid(postip):
     postid = m.hexdigest()[0:8]
     return postid
 
+def _processTag(tags):
+    tagslist = []
+    tmps = tags.split(',')
+    for tmp in tmps:
+        tagslist.append(tmp)
+    return tagslist
+
 class PostController(BaseController):
     def new(self):
-        #print self.params
         username = self.params.get('name')
-        #self.tmp = _processUsername(username)
+        if username:
+            username = _processUsername(username)
+        else:
+            username = '無名氏'
         postip = self.request.remote_addr
+        postid = _processPostid(postip)
+        email = self.params.get('email')
+        title = self.params.get('sub')
+        content = self.params.get('com')
+        pic = self.params.get('upfile')
+        tags = self.params.get('category')
+        if tags:
+            tags = _processTag(tags)
+        password = self.params.get('pwd')
+        tz = tz_helper.timezone(settings.TIME_ZONE)
+        now = datetime.datetime.now(tz)
+        createtime = now
+        replytime = now
+        data = Pixmicat(username=username, postid=postid, email=email, title=title, content=content, password=password, createtime=createtime, replytime=replytime, postip=postip)
+        if pic:
+            data.pic = db.Blob(pic)
+        if tags:
+            data.tags = tags
+        data.put()
+        #self.tmp = data.ID
+        self.redirect('/')

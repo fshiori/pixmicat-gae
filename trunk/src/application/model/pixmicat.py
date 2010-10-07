@@ -8,7 +8,7 @@ class Pixmicat(BaseModel):
     title = db.StringProperty()
     content = db.TextProperty()
     pic = db.BlobProperty()
-    tag = db.StringListProperty()
+    tags = db.StringListProperty()
     password = db.StringProperty()
     createtime = db.DateTimeProperty()
     replytime = db.DateTimeProperty()
