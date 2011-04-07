@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
-
 import cgi
 
 from google.appengine.ext import db
@@ -46,6 +45,7 @@ def _processTag(tags):
     return tagslist
 
 class PostController(BaseController):
+    
     def new(self):
         username = self.params.get('name')
         if username:
@@ -56,6 +56,8 @@ class PostController(BaseController):
         postid = _processPostid(postip)
         email = self.params.get('email')
         title = self.params.get('sub')
+        if not title:
+            title = '無標題'
         content = self.params.get('com')
         pic = self.params.get('upfile')
         tags = self.params.get('category')
@@ -79,4 +81,4 @@ class PostController(BaseController):
         self.redirect('/')
         
     def noimg(self):
-        pass
+        self.title = settings.TITLE

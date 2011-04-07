@@ -1,4 +1,12 @@
+# -*- coding: utf-8 -*-
+import datetime
+import tz_helper
+
 from gaeo.controller import BaseController
+from google.appengine.ext import db
+
+import settings
+from model.pixmicat import Pixmicat
 
 class WelcomeController(BaseController):
     """The default Controller
@@ -10,10 +18,12 @@ class WelcomeController(BaseController):
 
         related to templates/welcome/index.html
         """
-        import datetime
-        import tz_helper
-        import settings
-        tz = tz_helper.timezone(settings.TIME_ZONE)
-        now = datetime.datetime.now(tz)
         self.title = settings.TITLE
+        
+        msgs = Pixmicat.all()
+        msgs.order('-replytime')
+        msgs.fetch(10)
+        self.msgs = msgs
+        #tz = tz_helper.timezone(settings.TIME_ZONE)
+        #now = datetime.datetime.now(tz)
         #self.render(text='Exception: %s' % now)
