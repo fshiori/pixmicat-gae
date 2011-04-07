@@ -54,6 +54,17 @@ def _getCounter():
     ind.put()
     return ind.count
 
+def _setPostCounter(type=1):
+    ind = Counter.get_by_key_name('Post')
+    if ind is None:
+        ind = Counter(key_name='Post')
+    if type == 1:
+        ind.count += 1
+    else:
+        ind.count -= 1
+    ind.put()
+    return ind.count    
+
 class PostController(BaseController):
     
     def new(self):
@@ -89,6 +100,7 @@ class PostController(BaseController):
         if tags:
             data.tags = tags
         data.put()
+        _setPostCounter()
         self.redirect('/')
         
     def read(self):
@@ -184,7 +196,9 @@ class PostController(BaseController):
                         replies = Pixmicat.all()
                         replies.filter('mainpost =', entity)
                         for reply in replies:
-                            reply.delete()                    
+                            reply.delete()
+                        if entity.mainpost == None:
+                            _setPostCounter(2)
                         entity.delete()
         self.redirect('/')
 
