@@ -74,9 +74,9 @@
 
 {% if msgs %}
 {% for msg in msgs %}
-<div class="threadpost" id="r3">
-<input type="checkbox" name="3" value="delete" /><span class="title">{{msg.title}}</span>
-名稱: <span class="name">{{msg.title}}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="pixmicat.php?res=3#q3" class="qlink">No.3</a>&nbsp;[<a href="pixmicat.php?res=3">回應</a>]
+<div class="threadpost" id="r{{msg.index}}">
+<input type="checkbox" name="{{msg.index}}" value="delete" /><span class="title">{{msg.title}}</span>
+名稱: <span class="name">{{msg.title}}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="pixmicat.php?res=3#q3" class="qlink">No.{{msg.index}}</a>&nbsp;[<a href="pixmicat.php?res=3">回應</a>]
 <div class="quote">{{msg.content}}</div>
 
 </div>

@@ -9,6 +9,7 @@ from gaeo.controller import BaseController
 
 import settings
 from model.pixmicat import Pixmicat
+from model.counter import Counter
 
 def _processUsername(username):
     import string
@@ -44,6 +45,14 @@ def _processTag(tags):
         tagslist.append(tmp)
     return tagslist
 
+def _getCounter():
+    ind = Counter.get_by_key_name('Pixmicat')
+    if ind is None:
+        ind = Counter(key_name='Pixmicat')
+    ind.count += 1
+    ind.put()
+    return ind.count
+
 class PostController(BaseController):
     
     def new(self):
@@ -65,10 +74,8 @@ class PostController(BaseController):
         if tags:
             tags = _processTag(tags)
         password = self.params.get('pwd')
-        now = datetime.datetime.now()
-        createtime = now
-        replytime = now
-        data = Pixmicat(username=username, postid=postid, email=email, title=title, content=content, password=password, createtime=createtime, replytime=replytime, postip=postip)
+        index = _getCounter()
+        data = Pixmicat(index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
         if pic:
             data.pic = db.Blob(pic)
         else:
