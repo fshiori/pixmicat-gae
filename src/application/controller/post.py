@@ -93,6 +93,33 @@ class PostController(BaseController):
     def read(self):
         key = self.params.get('id')
         self.key = key
+        msg = Pixmicat.get(key)
+        tmp = {}
+        tmp['key'] = msg.key()
+        tmp['content'] = msg.content
+        tmp['createtime'] = msg.createtime
+        tmp['email'] = msg.email
+        tmp['index'] = msg.index
+        tmp['pic'] = 0
+        if msg.pic:
+            tmp['pic'] = 1
+            #tmp['size'] = _getFileSize(msg.pic)
+            #pic = images.Image(msg.pic)
+            #tmp['width'] = pic.width
+            #tmp['height'] = pic.height
+            #d = _resize(pic)
+            #tmp['newwidth'] = d.get('width')
+            #tmp['newheight'] = d.get('height')
+            #tmp['resize'] = 0
+            #if tmp['width'] != tmp['newwidth'] or tmp['height'] != tmp['newheight']:
+            #    tmp['resize'] = 1
+        tmp['postid'] = msg.postid
+        tmp['title'] = msg.title
+        tmp['username'] = msg.username
+        replies = Pixmicat.all()
+        replies.filter('mainpost =', msg)
+        replies.order('createtime')
+        tmp['replies'] = replies
     
     def reply(self):
         username = self.params.get('name')
