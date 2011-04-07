@@ -31,8 +31,10 @@ class ImageController(BaseController):
             newwidth = int(width * rsize)
             newheight = int(height * rsize)
             pic.resize(width=newwidth, height=newheight)
-        pic = pic.execute_transforms(output_encoding=images.JPEG)
-        self.render(image=pic)
+            pic = pic.execute_transforms(output_encoding=images.JPEG)
+            self.render(image=pic)
+            return
+        self.render(image=entity.pic)
         
     def resizeReply(self):
         key = self.params.get('id')
@@ -48,7 +50,8 @@ class ImageController(BaseController):
             newwidth = int(width * rsize)
             newheight = int(height * rsize)
             pic.resize(width=newwidth, height=newheight)
-        pic = pic.execute_transforms(output_encoding=images.JPEG)
-        self.render(image=pic)
-                
+            pic = pic.execute_transforms(output_encoding=images.JPEG)
+            self.render(image=pic)
+            return
+        self.render(image=entity.pic)               
                 
