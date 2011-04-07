@@ -1,20 +1,20 @@
 {% extends "../base.html" %}
-
 {% block title %}{{title}}{% endblock %}
 
 {% block content %}
-
-
 <br />
 <h1>{{title}}</h1>
 <hr class="top" />
 </div>
 
-<form action="/post/new" method="post" enctype="multipart/form-data" onsubmit="return c();" id="postform_main">
+<form action="/post/reply/{{key}}" method="post" enctype="multipart/form-data" onsubmit="return c();" id="postform_main">
 <div id="postform">
+[<a href="/">回到版面</a>]<div class="bar_reply">回應模式</div>
+<input type="hidden" name="mode" value="regist" />
+<input type="hidden" name="MAX_FILE_SIZE" value="2048000" />
 
-[<span id="show" class="hide" onmouseover="showform();" onclick="showform();">投稿</span><span id="hide" class="show" onmouseover="hideform();" onclick="hideform();">隱藏表單</span>]
-
+<input type="hidden" name="upfile_path" value="" />
+<input type="hidden" name="resto" value="4" />
 <div style="text-align: center;">
 <table cellpadding="1" cellspacing="1" id="postform_tbl" style="margin: 0px auto; text-align: left;">
 <tr><td class="Form_bg"><b>名 稱</b></td><td><input type="text" name="name" id="fname" size="28" value="" /></td></tr>
@@ -30,8 +30,8 @@
 
 <tr><td colspan="2">
 <div id="postinfo">
-<ul><li>此服務可以接受 JPEG、PNG、GIF (包括動畫 GIF)、BMP、TIFF 以及 ICO 格式的影像資料</li><li>附加圖檔最大上傳資料量為 1 MB。當回文時E-mail填入sage為不推文功能</li><li>當檔案超過寬 250 像素、高 250 像素時會自動縮小尺寸顯示</li>
-<li>目前附加圖檔使用量大小： 75 KB / 30000 KB</li>
+<ul><li>可附加圖檔類型：GIF, JPG, PNG, BMP, SWF，瀏覽器才能正常附加圖檔</li><li>附加圖檔最大上傳資料量為 2000 KB。當回文時E-mail填入sage為不推文功能</li><li>當檔案超過寬 125 像素、高 125 像素時會自動縮小尺寸顯示</li>
+<li>目前附加圖檔使用量大小： 97 KB / 30000 KB</li>
 
 </ul>
 <noscript><div>＊您選擇關閉了JavaScript，但這對您的瀏覽及發文應無巨大影響</div></noscript>
@@ -43,36 +43,22 @@
 <hr />
 </div>
 </form>
-<script type="text/javascript">hideform();</script>
+
 
 <div id="contents">
 
-<form action="/post/delete" method="post">
+<form action="pixmicat.php" method="post">
 <div id="threads" class="autopagerize_page_element">
 
-{% if msgs %}
-{% for msg in msgs %}
-<div class="threadpost" id="r{{msg.index}}">
-{% if msg.pic %}
-檔名：<a href="/image/get/{{msg.key}}" rel="_blank">無</a>-({{msg.size}} KB, {{msg.width}}x{{msg.height}}) {%if msg.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{msg.key}}" style="width: {{msg.newwidth}}px; height: {{msg.newheight}}px;" class="img" alt="" title="" /><img src="/image/resize/{{msg.key}}"></a>
-{% endif %}
-<input type="checkbox" name="{{msg.index}}" value="delete" /><span class="title">{{msg.title}}</span>
-名稱: <span class="name">{% if msg.email %}<a href="mailto:msg.email">{% endif %}{{msg.username}}{% if msg.email %}</a>{% endif %}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{msg.index}}</a>&nbsp;[<a href="/post/read/{{msg.key}}">回應</a>]
-<div class="quote">{{msg.content}}</div>
+<div class="threadpost" id="r4">
+檔名：<a href="http://192.168.2.60/pixmicat/src/1302120212503.jpg" rel="_blank">1302120212503.jpg</a>-(84 KB, 300x300) <br /><a href="http://192.168.2.60/pixmicat/src/1302120212503.jpg" rel="_blank"><img src="nothumb.gif" class="img" alt="84 KB" title="84 KB" /></a><input type="checkbox" name="4" value="delete" /><span class="title">無標題</span>
+名稱: <span class="name">1</span> [11/04/07(四)04:03 ID:DyzKgTas] <a href="javascript:quote(4);" class="qlink">No.4</a>&nbsp;
+<div class="quote">無內文</div>
 
 </div>
-{% if msg.replies %}
-{% for reply in msg.replies %}
-<div class="reply" id="r{{reply.index}}">
-<input type="checkbox" name="{{reply.index}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
-<div class="quote">{{reply.content}}</div>
 
-</div>
-{% endfor %}
-{% endif %}
 <hr />
-{% endfor %}
-{% endif %}
+
 </div>
 
 
@@ -92,6 +78,8 @@
 <br style="clear: left;" />
 </div>
 </div>
+
+
 
 <div id="footer">
 {% include "../footer.html" %}
