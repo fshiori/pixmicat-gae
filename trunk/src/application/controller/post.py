@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import logging
 
 import cgi
 
@@ -7,7 +8,6 @@ from google.appengine.ext import db
 
 from gaeo.controller import BaseController
 
-import tz_helper
 import settings
 from model.pixmicat import Pixmicat
 
@@ -59,18 +59,24 @@ class PostController(BaseController):
         content = self.params.get('com')
         pic = self.params.get('upfile')
         tags = self.params.get('category')
+        noimg = self.params.get('noimg')
         if tags:
             tags = _processTag(tags)
         password = self.params.get('pwd')
-        tz = tz_helper.timezone(settings.TIME_ZONE)
-        now = datetime.datetime.now(tz)
+        now = datetime.datetime.now()
         createtime = now
         replytime = now
         data = Pixmicat(username=username, postid=postid, email=email, title=title, content=content, password=password, createtime=createtime, replytime=replytime, postip=postip)
         if pic:
             data.pic = db.Blob(pic)
+        else:
+            if noimg != 'on':
+                self.redirect('/post/noimg')
+                return
         if tags:
             data.tags = tags
         data.put()
-        #self.tmp = data.ID
         self.redirect('/')
+        
+    def noimg(self):
+        pass
