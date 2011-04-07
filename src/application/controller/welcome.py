@@ -21,10 +21,50 @@ def _resize(pic):
         height = int(height * rsize)
     return {'width':width, 'height':height}
 
+def _resizeReply(pic):
+    width = pic.width
+    height = pic.height
+    if width > 125 or height > 125:
+        if width > height:
+            rsize =  125.0 / width
+        else:
+            rsize =  125.0 / height
+        width = int(width * rsize)
+        height = int(height * rsize)
+    return {'width':width, 'height':height}
+
 def _getFileSize(pic):
     size = len(pic)
     size = size/1024
     return size
+
+def _packData(msg, type=1):
+    tmp = {}
+    tmp['key'] = msg.key()
+    tmp['content'] = msg.content
+    tmp['createtime'] = msg.createtime
+    tmp['email'] = msg.email
+    tmp['index'] = msg.index
+    tmp['pic'] = 0
+    if msg.pic:
+        tmp['pic'] = 1
+        tmp['size'] = _getFileSize(msg.pic)
+        pic = images.Image(msg.pic)
+        tmp['width'] = pic.width
+        tmp['height'] = pic.height
+        if type == 1:
+            d = _resize(pic)
+        else:
+            d = _resizeReply(pic)
+        tmp['newwidth'] = d.get('width')
+        tmp['newheight'] = d.get('height')
+        tmp['resize'] = 0
+        if tmp['width'] != tmp['newwidth'] or tmp['height'] != tmp['newheight']:
+            tmp['resize'] = 1
+    tmp['postid'] = msg.postid
+    tmp['title'] = msg.title
+    tmp['username'] = msg.username
+    return tmp
 
 class WelcomeController(BaseController):
     """The default Controller
@@ -44,32 +84,15 @@ class WelcomeController(BaseController):
         msgs.fetch(10)
         posts = []
         for msg in msgs:
-            tmp = {}
-            tmp['key'] = msg.key()
-            tmp['content'] = msg.content
-            tmp['createtime'] = msg.createtime
-            tmp['email'] = msg.email
-            tmp['index'] = msg.index
-            tmp['pic'] = 0
-            if msg.pic:
-                tmp['pic'] = 1
-                tmp['size'] = _getFileSize(msg.pic)
-                pic = images.Image(msg.pic)
-                tmp['width'] = pic.width
-                tmp['height'] = pic.height
-                d = _resize(pic)
-                tmp['newwidth'] = d.get('width')
-                tmp['newheight'] = d.get('height')
-                tmp['resize'] = 0
-                if tmp['width'] != tmp['newwidth'] or tmp['height'] != tmp['newheight']:
-                    tmp['resize'] = 1
-            tmp['postid'] = msg.postid
-            tmp['title'] = msg.title
-            tmp['username'] = msg.username
+            res = []
+            tmp = _packData(msg)
             replies = Pixmicat.all()
             replies.filter('mainpost =', msg)
             replies.order('createtime')
-            tmp['replies'] = replies
+            for reply in replies:
+                tmp2 = _packData(reply, 2)
+                res.append(tmp2)
+            tmp['replies'] = res
             posts.append(tmp)
         self.msgs = posts
         #tz = tz_helper.timezone(settings.TIME_ZONE)

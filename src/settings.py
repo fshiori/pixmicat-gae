@@ -10,7 +10,7 @@ FILEIO_BACKEND = '' # Add 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'.
 IMAGESHACK_API_KEY = '' # Only ImageShack need.
 
 #/*---- Part 2：板面各項細部功能設定 ----*/
-TITLE = 'Pixmicat!-PIO' # 網頁標題
+TITLE = 'Pixmicat!-GAE' # 網頁標題
 ADMIN_PASS = 'futaba' # 管理員密碼
 
 # 附加圖檔限制

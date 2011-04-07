@@ -34,6 +34,7 @@ def _processUsername(username):
 def _processPostid(postip):
     import hashlib
     m = hashlib.md5()
+    #m = hashlib.sha1()
     m.update(postip)
     postid = m.hexdigest()[0:8]
     return postid
@@ -91,6 +92,7 @@ class PostController(BaseController):
         self.redirect('/')
         
     def read(self):
+        self.title = settings.TITLE
         key = self.params.get('id')
         self.key = key
         msg = Pixmicat.get(key)
@@ -135,7 +137,7 @@ class PostController(BaseController):
             title = '無標題'
         content = self.params.get('com')
         if not content:
-            content = '無內文'
+            content = u'無內文'
         pic = self.params.get('upfile')
         tags = self.params.get('category')
         noimg = self.params.get('noimg')
@@ -163,3 +165,28 @@ class PostController(BaseController):
         
     def noimg(self):
         self.title = settings.TITLE
+        
+    def delete(self):
+        params = self.params.items()
+        logging.info(params)
+        for param in params:
+            if param[1] == 'delete' and param[0] != 'pwd' and param[0] != 'action':
+                logging.info(param)
+                key = param[0]
+                entity = Pixmicat.get(key)
+                passwd = self.params.get('pwd')
+                if entity.password == passwd:
+                    #onlyimgdel on
+                    if self.params.get('onlyimgdel') == 'on':
+                        entity.pic = None
+                        entity.put()
+                    else:
+                        replies = Pixmicat.all()
+                        replies.filter('mainpost =', entity)
+                        for reply in replies:
+                            reply.delete()                    
+                        entity.delete()
+        self.redirect('/')
+
+                
+        

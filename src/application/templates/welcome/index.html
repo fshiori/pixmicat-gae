@@ -56,7 +56,7 @@
 {% if msg.pic %}
 檔名：<a href="/image/get/{{msg.key}}" rel="_blank">無</a>-({{msg.size}} KB, {{msg.width}}x{{msg.height}}) {%if msg.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{msg.key}}" style="width: {{msg.newwidth}}px; height: {{msg.newheight}}px;" class="img" alt="" title="" /><img src="/image/resize/{{msg.key}}"></a>
 {% endif %}
-<input type="checkbox" name="{{msg.index}}" value="delete" /><span class="title">{{msg.title}}</span>
+<input type="checkbox" name="{{msg.key}}" value="delete" /><span class="title">{{msg.title}}</span>
 名稱: <span class="name">{% if msg.email %}<a href="mailto:msg.email">{% endif %}{{msg.username}}{% if msg.email %}</a>{% endif %}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{msg.index}}</a>&nbsp;[<a href="/post/read/{{msg.key}}">回應</a>]
 <div class="quote">{{msg.content}}</div>
 
@@ -64,7 +64,10 @@
 {% if msg.replies %}
 {% for reply in msg.replies %}
 <div class="reply" id="r{{reply.index}}">
-<input type="checkbox" name="{{reply.index}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
+{% if reply.pic %}
+檔名：<a href="/image/get/{{reply.key}}" rel="_blank">無</a>-({{reply.size}} KB, {{reply.width}}x{{reply.height}}) {%if reply.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{reply.key}}" style="width: {{reply.newwidth}}px; height: {{reply.newheight}}px;" class="img" alt="" title="" /><img src="/image/resizeReply/{{reply.key}}"></a>
+{% endif %}
+<input type="checkbox" name="{{reply.key}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
 <div class="quote">{{reply.content}}</div>
 
 </div>
