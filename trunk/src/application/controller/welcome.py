@@ -4,6 +4,7 @@ import logging
 
 import tz_helper
 from gaeo.controller import BaseController
+from gaeo.session.memcache import MemcacheSession
 from google.appengine.ext import db
 from google.appengine.api import images
 
@@ -83,7 +84,13 @@ class WelcomeController(BaseController):
             p = 0
         else:
             p = int(p)
-        #logging.info(p)   
+        #logging.info(p)
+        session = MemcacheSession(self)
+        savepassword = session.get('password')
+        #logging.info(session)
+        if savepassword:
+            #logging.info("1")
+            self.savepassword = savepassword  
         self.title = settings.TITLE
         totalpost = Counter.get_by_key_name('Post').count
         msgs = Pixmicat.all()

@@ -2,18 +2,20 @@
 import datetime
 import logging
 import cgi
+import string
+import hashlib
+import random
 
 from google.appengine.ext import db
 
 from gaeo.controller import BaseController
-
+from gaeo.session.memcache import MemcacheSession 
 import settings
 from model.pixmicat import Pixmicat
 from model.counter import Counter
 
 def _processUsername(username):
-    import string
-    import hashlib
+
     tmp = string.find(username,'◆')
     if tmp != -1:
         return string.replace(username, '◆', '◇')
@@ -63,7 +65,13 @@ def _setPostCounter(type=1):
     else:
         ind.count -= 1
     ind.put()
-    return ind.count    
+    return ind.count
+
+def _createRandom(len=10):
+    tmp = ''
+    for i in range(len):
+        tmp += random.choice('1234567890qwertyuiopasdfghjklzxcvbnm')
+    return tmp  
 
 class PostController(BaseController):
     
@@ -89,6 +97,11 @@ class PostController(BaseController):
         if tags:
             tags = _processTag(tags)
         password = self.params.get('pwd')
+        if not password:
+            password = _createRandom()
+            session = MemcacheSession(self)
+            session['password'] = password
+            session.put()
         index = _getCounter()
         data = Pixmicat(index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
         if pic:
@@ -101,6 +114,7 @@ class PostController(BaseController):
             data.tags = tags
         data.put()
         _setPostCounter()
+        #self.savepassword = password
         self.redirect('/')
         
     def read(self):
@@ -187,6 +201,8 @@ class PostController(BaseController):
                 key = param[0]
                 entity = Pixmicat.get(key)
                 passwd = self.params.get('pwd')
+                logging.info(entity.password)
+                logging.info(passwd)
                 if entity.password == passwd:
                     #onlyimgdel on
                     if self.params.get('onlyimgdel') == 'on':
