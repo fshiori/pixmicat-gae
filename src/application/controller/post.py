@@ -250,7 +250,8 @@ class PostController(BaseController):
         if email != 'sage':
             now = datetime.datetime.now()
             entity.replytime = now
-            entity.put()
+        entity.count += 1
+        entity.put()
         self.redirect('/')
         
     def noimg(self):
