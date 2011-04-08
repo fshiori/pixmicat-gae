@@ -13,6 +13,8 @@ from model.counter import Counter
 class ShowController(BaseController):
     
     def index(self):
+        logging.info(self.params)
+        return
         self.title = settings.TITLE
         page = self.params.get('page')
         if not page:

@@ -27,6 +27,7 @@ def initRoutes():
     r = router.Router()
 
     # TODO: add routes here
+    r.connect('/show/:id', controller='show', action='index')
 
     r.connect('/:controller/:action/:id')
     r.connect('/:controller/:action/:id.:format')
