@@ -64,10 +64,10 @@
 {% if msg.replies %}
 {% for reply in msg.replies %}
 <div class="reply" id="r{{reply.index}}">
-{% if reply.pic %}
-檔名：<a href="/image/get/{{reply.key}}" rel="_blank">無</a>-({{reply.size}} KB, {{reply.width}}x{{reply.height}}) {%if reply.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{reply.key}}" style="width: {{reply.newwidth}}px; height: {{reply.newheight}}px;" class="img" alt="" title="" /><img src="/image/resizeReply/{{reply.key}}"></a>
-{% endif %}
 <input type="checkbox" name="{{reply.key}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
+{% if reply.pic %}
+<br>檔名：<a href="/image/get/{{reply.key}}" rel="_blank">無</a>-({{reply.size}} KB, {{reply.width}}x{{reply.height}}) {%if reply.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{reply.key}}" style="width: {{reply.newwidth}}px; height: {{reply.newheight}}px;" class="img" alt="" title="" /><img src="/image/resizeReply/{{reply.key}}"></a>
+{% endif %}
 <div class="quote">{{reply.content|escape}}</div>
 
 </div>
