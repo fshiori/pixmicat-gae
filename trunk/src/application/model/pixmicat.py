@@ -15,3 +15,4 @@ class Pixmicat(BaseModel):
     replytime = db.DateTimeProperty(auto_now_add=True)
     postip = db.StringProperty()   
     mainpost = db.SelfReferenceProperty()
+    count = db.IntegerProperty(required=True, default=0)
