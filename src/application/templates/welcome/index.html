@@ -26,7 +26,7 @@
 
 </td></tr>
 <tr><td class="Form_bg"><b>類別標籤</b></td><td><input type="text" name="category" size="28" value="" /><small>(請以 , 逗號分隔多個標籤)</small></td></tr>
-<tr><td class="Form_bg"><b>刪除用密碼</b></td><td><input type="password" name="pwd" size="8" maxlength="8" value="" /><small>(刪除文章用。英數字8字元以內)</small></td></tr>
+<tr><td class="Form_bg"><b>刪除用密碼</b></td><td><input type="password" name="pwd" size="8" maxlength="8" value="{{savepassword}}" /><small>(刪除文章用。英數字8字元以內)</small></td></tr>
 
 <tr><td colspan="2">
 <div id="postinfo">
@@ -83,7 +83,7 @@
 <table style="float: right;">
 <tr><td align="center" style="white-space: nowrap;">
 <input type="hidden" name="mode" value="usrdel" />【刪除文章】[<input type="checkbox" name="onlyimgdel" id="onlyimgdel" value="on" /><label for="onlyimgdel">僅刪除附加圖檔</label>]<br />
-刪除用密碼: <input type="password" name="pwd" size="8" value="" /><input type="submit" value=" 執行 " />
+刪除用密碼: <input type="password" name="pwd" size="8" value="{{savepassword}}" /><input type="submit" value=" 執行 " />
 
 </td></tr>
 </table>
