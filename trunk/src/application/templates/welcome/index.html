@@ -58,7 +58,7 @@
 {% endif %}
 <input type="checkbox" name="{{msg.key}}" value="delete" /><span class="title">{{msg.title}}</span>
 名稱: <span class="name">{% if msg.email %}<a href="mailto:msg.email">{% endif %}{{msg.username}}{% if msg.email %}</a>{% endif %}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{msg.index}}</a>&nbsp;[<a href="/post/read/{{msg.key}}">回應</a>]
-<div class="quote">{{msg.content}}</div>
+<div class="quote">{{msg.content|escape}}</div>
 
 </div>
 {% if msg.replies %}
@@ -68,7 +68,7 @@
 檔名：<a href="/image/get/{{reply.key}}" rel="_blank">無</a>-({{reply.size}} KB, {{reply.width}}x{{reply.height}}) {%if reply.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{reply.key}}" style="width: {{reply.newwidth}}px; height: {{reply.newheight}}px;" class="img" alt="" title="" /><img src="/image/resizeReply/{{reply.key}}"></a>
 {% endif %}
 <input type="checkbox" name="{{reply.key}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
-<div class="quote">{{reply.content}}</div>
+<div class="quote">{{reply.content|escape}}</div>
 
 </div>
 {% endfor %}
@@ -91,7 +91,7 @@
 
 <script type="text/javascript">l2();</script>
 </form>
-<div id="page_switch"><table border="1"><tr><td style="white-space: nowrap;">第一頁</td><td>[<b>0</b>] </td><td style="white-space: nowrap;">最後一頁</td></tr></table>
+<div id="page_switch"><table border="1"><tr>{% ifequal 0 nowpage %}<td style="white-space: nowrap;">第一頁</td>{% else %}<td><form action="/" method="get"><input value="{{nowpage|add:"-1"}}" type="hidden" name="pages" ><div><input value="上一頁" type="submit"></div></form></td>{% endifequal %}<td>{% for page in pages %}{% ifequal page nowpage %}[<b>{{page}}</b>]{% else %}[<a href="/?pages={{page}}">{{page}}</a>]{% endifequal %}{% endfor %}</td>{% ifequal maxpage nowpage %}<td style="white-space: nowrap;">最後一頁</td>{%else%}<td><form action="/" method="get"><input value="{{nowpage|add:"1"}}" type="hidden" name="pages" ><div><input value="下一頁" type="submit"></div></form></td>{% endifequal %}</tr></table>
 <br style="clear: left;" />
 </div>
 </div>

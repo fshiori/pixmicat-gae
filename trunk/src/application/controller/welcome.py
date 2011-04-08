@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import datetime
-import tz_helper
+import logging
 
+import tz_helper
 from gaeo.controller import BaseController
 from google.appengine.ext import db
 from google.appengine.api import images
 
 import settings
 from model.pixmicat import Pixmicat
+from model.counter import Counter
 
 def _resize(pic):
     width = pic.width
@@ -76,12 +78,19 @@ class WelcomeController(BaseController):
 
         related to templates/welcome/index.html
         """
+        p = self.params.get('pages')
+        if not p:
+            p = 0
+        else:
+            p = int(p)
+        #logging.info(p)   
         self.title = settings.TITLE
-        
+        totalpost = Counter.get_by_key_name('Post').count
         msgs = Pixmicat.all()
         msgs.filter('mainpost =', None) 
         msgs.order('-replytime')
-        msgs.fetch(10)
+        msgs = msgs.fetch(10, 10*p)
+        #logging.info(len(msgs))
         posts = []
         for msg in msgs:
             res = []
@@ -95,6 +104,10 @@ class WelcomeController(BaseController):
             tmp['replies'] = res
             posts.append(tmp)
         self.msgs = posts
+        pages = totalpost / 10
+        self.pages = range(pages + 1)
+        self.nowpage = p
+        self.maxpage = pages
         #tz = tz_helper.timezone(settings.TIME_ZONE)
         #now = datetime.datetime.now(tz)
         #self.render(text='Exception: %s' % now)
