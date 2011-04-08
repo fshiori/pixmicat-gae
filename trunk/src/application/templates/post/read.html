@@ -50,15 +50,32 @@
 <form action="pixmicat.php" method="post">
 <div id="threads" class="autopagerize_page_element">
 
-<div class="threadpost" id="r4">
-檔名：<a href="http://192.168.2.60/pixmicat/src/1302120212503.jpg" rel="_blank">1302120212503.jpg</a>-(84 KB, 300x300) <br /><a href="http://192.168.2.60/pixmicat/src/1302120212503.jpg" rel="_blank"><img src="nothumb.gif" class="img" alt="84 KB" title="84 KB" /></a><input type="checkbox" name="4" value="delete" /><span class="title">無標題</span>
-名稱: <span class="name">1</span> [11/04/07(四)04:03 ID:DyzKgTas] <a href="javascript:quote(4);" class="qlink">No.4</a>&nbsp;
-<div class="quote">無內文</div>
+{% if msgs %}
+{% for msg in msgs %}
+<div class="threadpost" id="r{{msg.index}}">
+{% if msg.pic %}
+檔名：<a href="/image/get/{{msg.key}}" rel="_blank">無</a>-({{msg.size}} KB, {{msg.width}}x{{msg.height}}) {%if msg.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{msg.key}}" style="width: {{msg.newwidth}}px; height: {{msg.newheight}}px;" class="img" alt="" title="" /><img src="/image/resize/{{msg.key}}"></a>
+{% endif %}
+<input type="checkbox" name="{{msg.key}}" value="delete" /><span class="title">{{msg.title}}</span>
+名稱: <span class="name">{% if msg.email %}<a href="mailto:msg.email">{% endif %}{{msg.username}}{% if msg.email %}</a>{% endif %}</span> [{{msg.createtime}} ID:{{msg.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{msg.index}}</a>&nbsp;[<a href="/post/read/{{msg.key}}">回應</a>]
+<div class="quote">{{msg.content|escape}}</div>
 
 </div>
+{% if msg.replies %}
+{% for reply in msg.replies %}
+<div class="reply" id="r{{reply.index}}">
+{% if reply.pic %}
+檔名：<a href="/image/get/{{reply.key}}" rel="_blank">無</a>-({{reply.size}} KB, {{reply.width}}x{{reply.height}}) {%if reply.resize %}<small>[以預覽圖顯示]</small>{% endif %}<br /><a href="/image/get/{{reply.key}}" style="width: {{reply.newwidth}}px; height: {{reply.newheight}}px;" class="img" alt="" title="" /><img src="/image/resizeReply/{{reply.key}}"></a>
+{% endif %}
+<input type="checkbox" name="{{reply.key}}" value="delete" /><span class="title">{{reply.title}}</span> 名稱: <span class="name">{{reply.username}}</span> [{{reply.createtime}} ID:{{reply.postid}}] <a href="/post/read/{{msg.key}}" class="qlink">No.{{reply.index}}</a> &nbsp; 
+<div class="quote">{{reply.content|escape}}</div>
 
+</div>
+{% endfor %}
+{% endif %}
 <hr />
-
+{% endfor %}
+{% endif %}
 </div>
 
 
@@ -66,7 +83,7 @@
 <table style="float: right;">
 <tr><td align="center" style="white-space: nowrap;">
 <input type="hidden" name="mode" value="usrdel" />【刪除文章】[<input type="checkbox" name="onlyimgdel" id="onlyimgdel" value="on" /><label for="onlyimgdel">僅刪除附加圖檔</label>]<br />
-刪除用密碼: <input type="password" name="pwd" size="8" value="" /><input type="submit" value=" 執行 " />
+刪除用密碼: <input type="password" name="pwd" size="8" value="{{savepassword}}" /><input type="submit" value=" 執行 " />
 
 </td></tr>
 </table>
@@ -74,7 +91,7 @@
 
 <script type="text/javascript">l2();</script>
 </form>
-<div id="page_switch"><table border="1"><tr><td style="white-space: nowrap;">第一頁</td><td>[<b>0</b>] </td><td style="white-space: nowrap;">最後一頁</td></tr></table>
+<div id="page_switch"><table border="1"><tr>{% ifequal 0 nowpage %}<td style="white-space: nowrap;">第一頁</td>{% else %}<td><form action="/" method="get"><input value="{{nowpage|add:"-1"}}" type="hidden" name="pages" ><div><input value="上一頁" type="submit"></div></form></td>{% endifequal %}<td>{% for page in pages %}{% ifequal page nowpage %}[<b>{{page}}</b>]{% else %}[<a href="/?pages={{page}}">{{page}}</a>]{% endifequal %}{% endfor %}</td>{% ifequal maxpage nowpage %}<td style="white-space: nowrap;">最後一頁</td>{%else%}<td><form action="/" method="get"><input value="{{nowpage|add:"1"}}" type="hidden" name="pages" ><div><input value="下一頁" type="submit"></div></form></td>{% endifequal %}</tr></table>
 <br style="clear: left;" />
 </div>
 </div>
