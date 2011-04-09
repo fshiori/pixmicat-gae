@@ -92,7 +92,11 @@ class WelcomeController(BaseController):
             #logging.info("1")
             self.savepassword = savepassword  
         self.title = settings.TITLE
-        totalpost = Counter.get_by_key_name('Post').count
+        totalpost = Counter.get_by_key_name('Post')
+        if totalpost:
+            totalpost = totalpost.count
+        else:
+            totalpost = 0
         msgs = Pixmicat.all()
         msgs.filter('mainpost =', None) 
         msgs.order('-replytime')
