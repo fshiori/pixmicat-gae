@@ -144,6 +144,7 @@ class PostController(BaseController):
             username = _processUsername(username)
         else:
             username = '無名氏'
+        username = unicode(username, 'utf-8')
         postip = self.request.remote_addr
         postip = postip.encode('utf-8')
         postid = _processPostid(postip)
@@ -156,14 +157,14 @@ class PostController(BaseController):
             title = '無標題'
         else:
             title = title.encode('utf-8')
+        title = unicode(title, 'utf-8')
         content = self.params.get('com')
         if not content:
             content = '無內文'
             #content = 'xxx'
         else:
-            pass
-            #content = content.encode('utf-8')
-            #content = unicode(content, 'utf-8')
+            content = content.encode('utf-8')
+        content = unicode(content, 'utf-8')
         pic = self.params.get('upfile')
         tags = self.params.get('category')
         noimg = self.params.get('noimg')
@@ -185,6 +186,8 @@ class PostController(BaseController):
         data.postid=postid
         data.email=email
         data.title=title
+        #logging.info(content)
+        #data.content=db.Text(content, encoding="utf-8")
         data.content=db.Text(content)
         data.password=password
         data.postip=postip
@@ -197,12 +200,12 @@ class PostController(BaseController):
                 return
         if tags:
             data.tags = tags
+        #logging.info(data)
         data.put()
         _setPostCounter()
         #self.savepassword = password
         #logging.info("1")
         self.redirect('/')
-        return
         
     def read(self):
         self.title = settings.TITLE
@@ -243,30 +246,64 @@ class PostController(BaseController):
         #self.render(text='Exception: %s' % now)
     
     def reply(self):
+        #logging.info("3")
         username = self.params.get('name')
         if username:
+            username = username.encode('utf-8')
             username = _processUsername(username)
         else:
-            username = u'無名氏'
+            username = '無名氏'
+        username = unicode(username, 'utf-8')
         postip = self.request.remote_addr
+        postip = postip.encode('utf-8')
         postid = _processPostid(postip)
+        postid = unicode(postid, 'utf-8')
         email = self.params.get('email')
+        if email:
+            email = email.encode('utf-8')
         title = self.params.get('sub')
         if not title:
-            title = u'無標題'
+            title = '無標題'
+        else:
+            title = title.encode('utf-8')
+        title = unicode(title, 'utf-8')
         content = self.params.get('com')
         if not content:
-            content = u'無內文'
+            content = '無內文'
+            #content = 'xxx'
+        else:
+            content = content.encode('utf-8')
+        content = unicode(content, 'utf-8')
         pic = self.params.get('upfile')
         tags = self.params.get('category')
         noimg = self.params.get('noimg')
         if tags:
             tags = _processTag(tags)
+        else:
+            tags = u""
         password = self.params.get('pwd')
+        if not password:
+            password = _createRandom()
+            session = MemcacheSession(self)
+            session['password'] = password
+            session.put()
+            password = password.encode('utf-8')
         index = _getCounter()
         key = self.params.get('id')
         entity = db.get(key)
         data = Pixmicat(mainpost = entity, index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
+        #data = Pixmicat(index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
+        #data = Pixmicat(index=index)
+        #data.username=username
+        #data.postid=postid
+        #data.email=email
+        #data.title=title
+        #logging.info(content)
+        #data.content=db.Text(content, encoding="utf-8")
+        #data.content=db.Text(content)
+        #data.password=password
+        #data.postip=postip
+        #logging.info("2")
         if pic:
             data.pic = db.Blob(pic)
         else:
@@ -275,7 +312,11 @@ class PostController(BaseController):
                 return
         if tags:
             data.tags = tags
+        #logging.info(data)
         data.put()
+        #_setPostCounter()
+        #self.savepassword = password
+        #logging.info("1")
         if email != 'sage':
             now = datetime.datetime.now()
             entity.replytime = now
