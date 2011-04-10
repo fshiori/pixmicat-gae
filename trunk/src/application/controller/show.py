@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 import cgi
 import logging
 
 from google.appengine.ext import db
+from google.appengine.api import images
 
 from gaeo.controller import BaseController
 from gaeo.session.memcache import MemcacheSession
