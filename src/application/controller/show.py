@@ -1,37 +1,53 @@
 # -*- coding: utf-8 -*-
 import cgi
 import logging
+from datetime import datetime
 
 from google.appengine.ext import db
 from google.appengine.api import images
+from google.appengine.api import memcache
 
 from gaeo.controller import BaseController
 from gaeo.session.memcache import MemcacheSession
 
+import tz_helper
 import settings
 from model.pixmicat import Pixmicat
 from model.counter import Counter
+from model.pixmicat import Image
+from model.pixmicat import ResizeImage
 
 def _packData(msg, type=1):
+    tz = tz_helper.timezone(settings.TIME_ZONE)
     tmp = {}
-    tmp['key'] = msg.key()
+    #tmp['key'] = msg.key()
     tmp['content'] = msg.content
-    tmp['createtime'] = msg.createtime
+    local_time = msg.createtime + tz.utcoffset(msg.createtime)
+    tmp['createtime'] = local_time
     tmp['email'] = msg.email
     tmp['index'] = msg.index
     tmp['pic'] = 0
     if msg.pic:
-        image = Image.get_by_key_name(str(msg.index))
+        image = None
+        if settings.CACHE_PIC:
+            cached_pic = memcache.get(str(msg.index))
+            if cached_pic:
+                image = pickle.loads(cached_pic)
+        if not image:
+            image = Image.get_by_key_name(str(msg.index))
         tmp['pic'] = 1
-        tmp['size'] = len(tttt.pic)
-        tmp['width'] = tttt.width
-        tmp['height'] = pic.height
-        if type == 1:
-            d = _resize(pic)
-        else:
-            d = _resizeReply(pic)
-        tmp['newwidth'] = d.get('width')
-        tmp['newheight'] = d.get('height')
+        tmp['size'] = len(image.pic)
+        tmp['width'] = image.width
+        tmp['height'] = image.height
+        image = None
+        if settings.CACHE_RESIZE_PIC:
+            cached_pic = memcache.get(str(msg.index))
+            if cached_pic:
+                image = pickle.loads(cached_pic)
+        if not image:
+            image = ResizeImage.get_by_key_name(str(msg.index))
+        tmp['newwidth'] = image.width
+        tmp['newheight'] = image.height
         tmp['resize'] = 0
         if tmp['width'] != tmp['newwidth'] or tmp['height'] != tmp['newheight']:
             tmp['resize'] = 1
@@ -57,27 +73,24 @@ class ShowController(BaseController):
         entity = Counter.get_by_key_name('Post')
         if entity:
             totalpost = entity.count
-        msgs = Pixmicat.all()
-        msgs.filter('mainpost =', None) 
-        msgs.order('-replytime')
-        msgs = msgs.fetch(settings.PAGE_DEF, settings.PAGE_DEF * page)
-        posts = []
-        for msg in msgs:
-            res = []
-            pack_msg = _packData(msg)
+        posts = Pixmicat.all()
+        posts.filter('mainpost =', None) 
+        posts.order('-replytime')
+        posts = posts.fetch(settings.PAGE_DEF, settings.PAGE_DEF * page)
+        list_posts = []
+        for post in posts:
+            list_reply = []
+            pack_msg = _packData(post)
             replies = Pixmicat.all()
-            replies.filter('mainpost =', msg)
+            replies.filter('mainpost =', post)
             replies.order('createtime')
             for reply in replies:
                 pack_res = _packData(reply, 2)
-                res.append(pack_res)
-            pack_msg['replies'] = res
-            posts.append(pack_msg)
-        self.msgs = posts
+                list_reply.append(pack_res)
+            pack_msg['replies'] = list_reply
+            list_posts.append(pack_msg)
+        self.msgs = list_posts
         totalpage = totalpost / 10
-        self.pages = range(pages + 1)
+        self.pages = range(totalpage + 1)
         self.nowpage = page
         self.maxpage = totalpage
-        #tz = tz_helper.timezone(settings.TIME_ZONE)
-        #now = datetime.datetime.now(tz)
-        #self.render(text='Exception: %s' % now)
