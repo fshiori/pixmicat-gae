@@ -17,7 +17,7 @@ from model.counter import Counter
 from model.pixmicat import Image
 from model.pixmicat import ResizeImage
 
-def _packData(msg, type=1):
+def _packData(msg):
     tz = tz_helper.timezone(settings.TIME_ZONE)
     tmp = {}
     #tmp['key'] = msg.key()
@@ -83,14 +83,49 @@ class ShowController(BaseController):
             pack_msg = _packData(post)
             replies = Pixmicat.all()
             replies.filter('mainpost =', post)
-            replies.order('createtime')
+            replies.order('-createtime')
+            total_reply = post.count
+            replies = replies.fetch(settings.RE_DEF)
             for reply in replies:
-                pack_res = _packData(reply, 2)
+                pack_res = _packData(reply)
                 list_reply.append(pack_res)
+            list_reply = list_reply.reverse()
             pack_msg['replies'] = list_reply
+            if total_reply > settings.RE_DEF:
+                pack_msg['ignore'] = total_reply - settings.RE_DEF
             list_posts.append(pack_msg)
         self.msgs = list_posts
-        totalpage = totalpost / 10
+        totalpage = totalpost / settings.PAGE_DEF
+        self.pages = range(totalpage + 1)
+        self.nowpage = page
+        self.maxpage = totalpage
+        
+    def threads(self):
+        self.title = settings.TITLE
+        threadid = self.params.get('id')
+        page = self.params.get('page')
+        if not page:
+            page = 0
+        else:
+            page = int(page)
+        session = MemcacheSession(self)
+        password = session.get('password')
+        if password:
+            self.password = password
+        entity = Pixmicat.get_by_key_name(threadid)
+        pack_msg = _packData(entity)
+        list_reply = []
+        replies = Pixmicat.all()
+        replies.filter('mainpost =', entity)
+        replies.order('createtime')
+        total_reply = entity.count
+        replies = replies.fetch(settings.RE_PAGE_DEF, settings.RE_PAGE_DEF * page)
+        for reply in replies:
+            pack_res = _packData(reply)
+            list_reply.append(pack_res)
+        pack_msg['replies'] = list_reply
+        self.msg = pack_msg
+        totalpage = total_reply / settings.RE_PAGE_DEF
         self.pages = range(totalpage + 1)
         self.nowpage = page
         self.maxpage = totalpage

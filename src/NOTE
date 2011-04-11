@@ -1,0 +1,12 @@
+    * GET pixmicat.php/comic/show/1 : 取得 comic 版面第 1 頁
+    * GET pixmicat.php/comic/threads/486/2 : 取得討論串 No.486 第 2 頁內容
+    * POST pixmicat.php/comic/posts : 投稿 comic 版面新文章
+    * DELETE pixmicat.php/comic/posts/589 : 刪除 comic 版面 No.589 文章
+    * GET pixmicat.php/comic/action/status : 顯示系統狀態
+    * GET pixmicat.php/comic/action/remake : 重新生成快取
+    * GET pixmicat.php/comic/search : 搜尋功能
+    * GET pixmicat.php/comic/admin : 顯示登入頁面
+    * POST pixmicat.php/comic/admin : 認證頁面
+    * GET pixmicat.php/comic/admin/show/2 : 後端管理第二頁
+    * PUT pixmicat.php/comic/posts/589 : 修改 No.589 文章屬性
+    * GET pixmicat.php/comic/module/mod_XXX : 使用 mod_XXX 模組

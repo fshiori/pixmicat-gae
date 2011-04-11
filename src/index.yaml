@@ -18,5 +18,11 @@ indexes:
 - kind: Pixmicat
   properties:
   - name: mainpost
+  - name: createtime
+    direction: desc
+
+- kind: Pixmicat
+  properties:
+  - name: mainpost
   - name: replytime
     direction: desc
