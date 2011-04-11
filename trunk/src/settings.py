@@ -88,7 +88,7 @@ CACHE_RESIZE_PIC = 1 # 快取預覽圖片 (啟動：1 關閉：0)
 #外觀設定
 #ADDITION_INFO = '' # 可在表單下顯示額外文字
 #LIMIT_SENSOR = {'ByPostCountCondition' : 500} # 文章自動刪除機制設定
-#PAGE_DEF = 15 # 一頁顯示幾篇討論串
+PAGE_DEF = 15 # 一頁顯示幾篇討論串
 #ADMIN_PAGE_DEF = 20 # 管理模式下，一頁顯示幾筆資料
 #RE_DEF = 10 # 一篇討論串最多顯示之回應筆數 (超過則自動隱藏，全部隱藏：0)
 #RE_PAGE_DEF = 30 # 回應模式一頁顯示幾筆回應內容 (分頁用，全部顯示：0)
@@ -96,7 +96,7 @@ CACHE_RESIZE_PIC = 1 # 快取預覽圖片 (啟動：1 關閉：0)
 #MAX_AGE_TIME = 0 # 討論串可接受推文的時間範圍 (單位：小時，討論串存在超過此時間則回應皆不再自動推文 關閉：0)
 #COMM_MAX = 2000 # 內文接受Bytes數 (注意：中文字為2Bytes)
 #BR_CHECK = 0 # 文字換行行數上限 (不限：0)
-#STATIC_HTML_UNTIL = 0 # 頁面快取使用Memcache (啟動：1 關閉：0)
+STATIC_HTML_UNTIL = -1 # 更新文章時自動生成的靜態網頁至第幾頁止 (全部生成：-1 僅入口頁：0)
 #DEFAULT_NOTITLE = '無標題' # 預設文章標題
 #DEFAULT_NONAME = '無名氏' # 預設文章名稱
 #DEFAULT_NOCOMMENT = '無內文' # 預設文章內文
