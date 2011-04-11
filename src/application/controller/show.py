@@ -15,10 +15,8 @@ from model.counter import Counter
 class ShowController(BaseController):
     
     def index(self):
-        logging.info(self.params)
-        return
         self.title = settings.TITLE
-        page = self.params.get('page')
+        page = self.params.get('id')
         if not page:
             page = 0
         else:
@@ -27,7 +25,10 @@ class ShowController(BaseController):
         password = session.get('password')
         if password:
             self.password = password
-        totalpost = Counter.get_by_key_name('Post').count
+        totalpost = 0
+        entity = Counter.get_by_key_name('Post')
+        if entity:
+            totalpost = entity.count
         msgs = Pixmicat.all()
         msgs.filter('mainpost =', None) 
         msgs.order('-replytime')
