@@ -35,7 +35,7 @@ def _resize(pic, type=1):
     else:
         resizeP = resizeP_height
     if resizeP == 1:
-        return None #Don't need resize
+        return pic
     new_width = int(now_width * resizeP)
     new_height = int(now_height * resizeP)
     pic.resize(width=new_width, height=new_height)
@@ -63,8 +63,6 @@ def _miniature(key_name, type=1):
         if not entity:
             return
         pic = _resize(entity.pic, type)
-        if not pic:
-            return entity.pic
         if settings.STORAGE_RESIZE_PIC:
             pic_data = _getImageSize(pic)
             tmpEntity = ResizeImage(key_name=key_name, post=entity.post, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
