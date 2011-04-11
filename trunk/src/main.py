@@ -27,6 +27,8 @@ def initRoutes():
 
     # TODO: add routes here
     r.connect('/show/:id', controller='show', action='index')
+    r.connect('/threads/:id/:page', controller='show', action='threads')
+    r.connect('/threads/:id', controller='show', action='threads')
 
     r.connect('/:controller/:action/:id')
     r.connect('/:controller/:action/:id.:format')

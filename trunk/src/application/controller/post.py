@@ -190,7 +190,7 @@ class PostController(BaseController):
             password = password.encode('utf-8')
         index = _getCounter()
         #data = Pixmicat(index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
-        data = Pixmicat(index=index)
+        data = Pixmicat(key_name=str(index), index=index)
         data.username=username
         data.postid=postid
         data.email=email
