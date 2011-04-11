@@ -14,6 +14,7 @@ from google.appengine.api import images
 
 from gaeo.controller import BaseController
 from gaeo.session.memcache import MemcacheSession 
+
 import settings
 from model.pixmicat import Pixmicat
 from model.counter import Counter

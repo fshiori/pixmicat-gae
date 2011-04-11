@@ -8,7 +8,7 @@ class Pixmicat(BaseModel):
     email = db.StringProperty()
     title = db.StringProperty()
     content = db.TextProperty()
-    pic = db.BlobProperty()
+    #pic = db.BlobProperty()
     tags = db.StringListProperty()
     password = db.StringProperty()
     createtime = db.DateTimeProperty(auto_now_add=True)
@@ -16,3 +16,7 @@ class Pixmicat(BaseModel):
     postip = db.StringProperty()   
     mainpost = db.SelfReferenceProperty()
     count = db.IntegerProperty(required=True, default=0)
+    
+class Image(BaseModel):
+    post = db.ReferenceProperty()
+    pic = db.BlobProperty()
