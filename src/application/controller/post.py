@@ -18,6 +18,14 @@ from gaeo.session.memcache import MemcacheSession
 import settings
 from model.pixmicat import Pixmicat
 from model.counter import Counter
+from model.pixmicat import Image
+from model.pixmicat import ResizeImage
+
+def _getImageSize(pic):
+    pic = images.Image(pic)
+    width = pic.width
+    height = pic.height
+    return {'width':width, 'height':height}
 
 def _processUsername(username):
 
@@ -194,7 +202,7 @@ class PostController(BaseController):
         data.postip=postip
         #logging.info("2")
         if pic:
-            data.pic = db.Blob(pic)
+            data.pic = True
         else:
             if noimg != 'on':
                 self.redirect('/post/noimg')
@@ -204,6 +212,12 @@ class PostController(BaseController):
         #logging.info(data)
         data.put()
         _setPostCounter()
+        if pic:
+            key_name = str(index)
+            pic_data = _getImageSize(pic)
+            tmpEntity = Image(key_name=key_name, post=data, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
+            pic_data = _getImageSize(pic)
+            tmpEntity.put()
         #self.savepassword = password
         #logging.info("1")
         self.redirect('/')

@@ -11,6 +11,8 @@ from google.appengine.api import images
 import settings
 from model.pixmicat import Pixmicat
 from model.counter import Counter
+from model.pixmicat import Image
+from model.pixmicat import ResizeImage
 
 def _resize(pic):
     width = pic.width
@@ -50,9 +52,12 @@ def _packData(msg, type=1):
     tmp['index'] = msg.index
     tmp['pic'] = 0
     if msg.pic:
+        tttt = Image.get_by_key_name(str(msg.index))
+        logging.info(msg.index)
+        logging.info(tttt)
         tmp['pic'] = 1
-        tmp['size'] = _getFileSize(msg.pic)
-        pic = images.Image(msg.pic)
+        tmp['size'] = _getFileSize(tttt.pic)
+        pic = images.Image(tttt.pic)
         tmp['width'] = pic.width
         tmp['height'] = pic.height
         if type == 1:

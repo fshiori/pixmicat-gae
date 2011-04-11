@@ -11,6 +11,7 @@ from gaeo.controller import BaseController
 import settings
 from model.pixmicat import Pixmicat
 from model.pixmicat import Image
+from model.pixmicat import ResizeImage
 
 def _resize(pic, type=1):
     #type 1 is Post, 2 is Reply
@@ -34,13 +35,48 @@ def _resize(pic, type=1):
     else:
         resizeP = resizeP_height
     if resizeP == 1:
-        return pic
+        return None #Don't need resize
     new_width = int(now_width * resizeP)
     new_height = int(now_height * resizeP)
     pic.resize(width=new_width, height=new_height)
     pic = pic.execute_transforms(output_encoding=images.JPEG)
     return pic
 
+def _getImageSize(pic):
+    pic = images.Image(pic)
+    width = pic.width
+    height = pic.height
+    return {'width':width, 'height':height}
+
+def _miniature(key_name, type=1):
+    #type 1 is Post, 2 is Reply
+    if settings.CACHE_RESIZE_PIC:
+        cached_pic = memcache.get(key_name, namespace='ResizeImage')
+        if cached_pic:
+            return cached_pic
+    if settings.STORAGE_RESIZE_PIC:
+        entity = ResizeImage.get_by_key_name(key_name)
+    else:
+        entity = None
+    if not entity:
+        entity = Image.get_by_key_name(key_name)
+        if not entity:
+            return
+        pic = _resize(entity.pic, type)
+        if not pic:
+            return entity.pic
+        if settings.STORAGE_RESIZE_PIC:
+            pic_data = _getImageSize(pic)
+            tmpEntity = ResizeImage(key_name=key_name, post=entity.post, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
+            tmpEntity.put()
+            #entity.resize = True
+            #entity.put()
+    else:
+        pic = entity.pic
+    if settings.CACHE_RESIZE_PIC:
+        memcache.set(key_name, pic, namespace='ResizeImage')
+    return pic
+    
 class ImageController(BaseController):
     
     def index(self):
@@ -48,42 +84,32 @@ class ImageController(BaseController):
     
     def get(self):
         key_name = self.params.get('id')
-        cached_pic = memcache.get(key_name)
-        if cached_pic:
-            self.render(image=cached_pic)
-            return
+        if settings.CACHE_PIC:
+            cached_pic = memcache.get(key_name)
+            if cached_pic:
+                self.render(image=cached_pic)
+                return
         entity = Image.get_by_key_name(key_name)
         if not entity:
             self.render(text='Exception: %s' % 'No Image!')
             return
-        memcache.set(key_name, entity.pic)
+        if settings.CACHE_PIC:
+            memcache.set(key_name, entity.pic, namespace='Image')
         self.render(image=entity.pic)
         
     def show(self):
         key_name = self.params.get('id')
-        cached_pic = memcache.get(key_name)
-        if cached_pic:
-            self.render(image=cached_pic)
-            return
-        entity = Image.get_by_key_name(key_name)
-        if not entity:
+        pic = _miniature(key_name, type=1)
+        if not pic:
             self.render(text='Exception: %s' % 'No Image!')
-            return       
-        pic = _resize(entity.pic, type=1)
-        memcache.set(key_name, pic)
+            return            
         self.render(image=pic)
         
     def showReply(self):
         key_name = self.params.get('id')
-        cached_pic = memcache.get(key_name)
-        if cached_pic:
-            self.render(image=cached_pic)
-            return
-        entity = Image.get_by_key_name(key_name)
-        if not entity:
+        pic = _miniature(key_name, type=2)
+        if not pic:
             self.render(text='Exception: %s' % 'No Image!')
-            return       
-        pic = _resize(entity.pic, type=2)
-        memcache.set(key_name, pic)
-        self.render(image=pic)               
+            return            
+        self.render(image=pic)              
                 

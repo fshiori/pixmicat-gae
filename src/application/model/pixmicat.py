@@ -8,7 +8,7 @@ class Pixmicat(BaseModel):
     email = db.StringProperty()
     title = db.StringProperty()
     content = db.TextProperty()
-    #pic = db.BlobProperty()
+    pic = db.BooleanProperty()
     tags = db.StringListProperty()
     password = db.StringProperty()
     createtime = db.DateTimeProperty(auto_now_add=True)
@@ -19,4 +19,13 @@ class Pixmicat(BaseModel):
     
 class Image(BaseModel):
     post = db.ReferenceProperty()
+    width = db.IntegerProperty()
+    height = db.IntegerProperty()
+    #resize = db.BooleanProperty()
+    pic = db.BlobProperty()
+    
+class ResizeImage(BaseModel):
+    post = db.ReferenceProperty()
+    width = db.IntegerProperty()
+    height = db.IntegerProperty()
     pic = db.BlobProperty()

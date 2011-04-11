@@ -21,9 +21,10 @@ TIME_ZONE = 'Asia/Taipei' # 時區設定 需遵照pytz時區設定標準
 #PIXMICAT_LANGUAGE = 'zh-tw' # 語系語定
 HTTP_UPLOAD_DIFF = 50 # HTTP上傳所有位元組與實際位元組之允許誤差值
 
-# FileIO設定
-#FILEIO_BACKEND = '' # FileIO後端指定 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'.
+# 圖片FileIO設定
+#FILEIO_BACKEND = '' # 圖片FileIO後端指定 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'.
 #IMAGESHACK_API_KEY = '' # Only ImageShack need.
+CACHE_PIC = 1 # 快取圖片 (啟動：1 關閉：0 , 僅在FILEIO_BACKEND為GAE_BlobProperty有效)
 
 # PIO資料來源設定
 
@@ -81,7 +82,7 @@ MAX_W = 250 # 討論串本文預覽圖片寬度 (超過則自動縮小)
 MAX_H = 250 # 討論串本文預覽圖片高度
 MAX_RW = 125 # 討論串回應預覽圖片寬度 (超過則自動縮小)
 MAX_RH = 125 # 討論串回應預覽圖片高度
-STORAGE_RESIZE_PIC = 0 # 儲存預覽圖片 (啟動：1 關閉：0)
+STORAGE_RESIZE_PIC = 1 # 儲存預覽圖片 (啟動：1 關閉：0)
 CACHE_RESIZE_PIC = 1 # 快取預覽圖片 (啟動：1 關閉：0)
 
 #外觀設定
