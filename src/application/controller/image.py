@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import cgi
 import logging
+import pickle
 
 from google.appengine.ext import db
 from google.appengine.api import images
@@ -53,7 +54,8 @@ def _miniature(key_name, type=1):
     if settings.CACHE_RESIZE_PIC:
         cached_pic = memcache.get(key_name, namespace='ResizeImage')
         if cached_pic:
-            return cached_pic
+            data = pickle.loads(cached_pic)
+            return data.pic
     if settings.STORAGE_RESIZE_PIC:
         entity = ResizeImage.get_by_key_name(key_name)
     else:
@@ -65,15 +67,12 @@ def _miniature(key_name, type=1):
         pic = _resize(entity.pic, type)
         if settings.STORAGE_RESIZE_PIC:
             pic_data = _getImageSize(pic)
-            tmpEntity = ResizeImage(key_name=key_name, post=entity.post, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
-            tmpEntity.put()
-            #entity.resize = True
-            #entity.put()
-    else:
-        pic = entity.pic
+            entity = ResizeImage(key_name=key_name, post=entity.post, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
+            entity.put()
     if settings.CACHE_RESIZE_PIC:
-        memcache.set(key_name, pic, namespace='ResizeImage')
-    return pic
+        data = pickle.dumps(entity)
+        memcache.set(key_name, data, namespace='ResizeImage')
+    return entity.pic
     
 class ImageController(BaseController):
     
@@ -85,14 +84,16 @@ class ImageController(BaseController):
         if settings.CACHE_PIC:
             cached_pic = memcache.get(key_name)
             if cached_pic:
-                self.render(image=cached_pic)
+                data = pickle.loads(cached_pic)
+                self.render(image=data.pic)
                 return
         entity = Image.get_by_key_name(key_name)
         if not entity:
             self.render(text='Exception: %s' % 'No Image!')
             return
         if settings.CACHE_PIC:
-            memcache.set(key_name, entity.pic, namespace='Image')
+            data = pickle.dumps(entity)
+            memcache.set(key_name, data, namespace='Image')
         self.render(image=entity.pic)
         
     def show(self):
