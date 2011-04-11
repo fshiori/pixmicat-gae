@@ -82,7 +82,7 @@ class ImageController(BaseController):
     def get(self):
         key_name = self.params.get('id')
         if settings.CACHE_PIC:
-            cached_pic = memcache.get(key_name)
+            cached_pic = memcache.get(key_name, namespace='Image')
             if cached_pic:
                 data = pickle.loads(cached_pic)
                 self.render(image=data.pic)
