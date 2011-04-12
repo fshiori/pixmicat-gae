@@ -12,12 +12,13 @@ from gaeo.session.memcache import MemcacheSession
 
 import tz_helper
 import settings
+#from image import createMiniature
 from model.pixmicat import Pixmicat
 from model.counter import Counter
 from model.pixmicat import Image
 from model.pixmicat import ResizeImage
 
-def _packData(msg):
+def _packData(msg, type=1):
     tz = tz_helper.timezone(settings.TIME_ZONE)
     tmp = {}
     #tmp['key'] = msg.key()
@@ -46,6 +47,8 @@ def _packData(msg):
                 image = pickle.loads(cached_pic)
         if not image:
             image = ResizeImage.get_by_key_name(str(msg.index))
+        #if not image:
+        #    image = createMiniature(str(msg.index), type)
         tmp['newwidth'] = image.width
         tmp['newheight'] = image.height
         tmp['resize'] = 0
@@ -113,7 +116,7 @@ class ShowController(BaseController):
         if password:
             self.password = password
         entity = Pixmicat.get_by_key_name(threadid)
-        pack_msg = _packData(entity)
+        pack_msg = _packData(entity, 2)
         list_reply = []
         replies = Pixmicat.all()
         replies.filter('mainpost =', entity)

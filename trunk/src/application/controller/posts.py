@@ -2,6 +2,7 @@
 import cgi
 import hashlib
 import string
+import random
 
 from google.appengine.ext import db
 
@@ -9,21 +10,19 @@ from gaeo.controller import BaseController
 from gaeo.session.memcache import MemcacheSession
 
 import settings
+import image
 from model.pixmicat import Pixmicat
 from model.counter import Counter
 from model.pixmicat import Image
 from model.pixmicat import ResizeImage
 
 def _tranStamp(i):
-    #a-z 97-122 -> 36-61
-    #0-9 48-57 -> 0-9
-    #A-Z 65-90 -> 10-35
     i = i % 62
-    if i >= 0 and i <= 9:
+    if i >= 0 and i <= 9: #0-9 48-57 -> 0-9
         return chr(i + 48)
-    elif i >= 10 and i <= 35:
+    elif i >= 10 and i <= 35: #A-Z 65-90 -> 10-35
         return chr(i + 55)
-    elif i >= 36 and i <= 61:
+    elif i >= 36 and i <= 61: #a-z 97-122 -> 36-61
         return chr(i + 61)
     return ''
 
@@ -68,6 +67,14 @@ def _processCap(username, email=''):
 def _processPostid(postip):
     return _createHash(postip)[0:8]
 
+def _processTag(tags):
+    tagslist = []
+    tmps = tags.split(',')
+    for tmp in tmps:
+        s = unicode(tmp, 'utf-8')
+        tagslist.append(s)
+    return tagslist
+
 def _getCounter():
     ind = Counter.get_by_key_name('Pixmicat')
     if ind is None:
@@ -86,6 +93,12 @@ def _setPostCounter(type=1):
         ind.count -= 1
     ind.put()
     return ind.count
+
+def _createPassword(len=8):
+    tmp = ''
+    for i in range(len):
+        tmp += _tranStamp(random.randint(0,62))
+    return tmp
     
 class PostsController(BaseController):
     
@@ -93,48 +106,37 @@ class PostsController(BaseController):
         pass
     
     def new(self):
-        email = self.params.get('email')
-        if email:
-            email = email.encode('utf-8')
-        username = self.params.get('name')
+        username = self.params.get('name').encode('utf-8')
+        email = self.params.get('email').encode('utf-8')
         if username:
-            username = username.encode('utf-8')
             username = _processUsername(username, email)
         else:
-            username = '無名氏'
+            username = settings.DEFAULT_NONAME
         username = unicode(username, 'utf-8')
         postip = self.request.remote_addr
-        postip = postip.encode('utf-8')
         postid = _processPostid(postip)
-        postid = unicode(postid, 'utf-8')
-
-        title = self.params.get('sub')
+        title = self.params.get('sub').encode('utf-8')
         if not title:
-            title = '無標題'
-        else:
-            title = title.encode('utf-8')
+            title = settings.DEFAULT_NOTITLE
         title = unicode(title, 'utf-8')
-        content = self.params.get('com')
+        content = self.params.get('com').encode('utf-8')
         if not content:
-            content = '無內文'
-            #content = 'xxx'
-        else:
-            content = content.encode('utf-8')
+            content = settings.DEFAULT_NOCOMMENT
         content = unicode(content, 'utf-8')
         pic = self.params.get('upfile')
-        tags = self.params.get('category')
+        tags = self.params.get('category').encode('utf-8')
         noimg = self.params.get('noimg')
         if tags:
             tags = _processTag(tags)
         else:
-            tags = u""
+            tags = ""
         password = self.params.get('pwd')
         if not password:
-            password = '12345'
+            password = _createPassword()
             session = MemcacheSession(self)
             session['password'] = password
             session.put()
-            password = password.encode('utf-8')
+            #password = password.encode('utf-8')
         index = _getCounter()
         #data = Pixmicat(index=index, username=username, postid=postid, email=email, title=title, content=content, password=password, postip=postip)
         data = Pixmicat(key_name=str(index), index=index)
@@ -161,10 +163,11 @@ class PostsController(BaseController):
         _setPostCounter()
         if pic:
             key_name = str(index)
-            pic_data = _getImageSize(pic)
+            pic_data = image.getImageSize(pic)
             tmpEntity = Image(key_name=key_name, post=data, width=pic_data.get('width'), height=pic_data.get('height'), pic=db.Blob(pic))
-            pic_data = _getImageSize(pic)
+            #pic_data = image.getImageSize(pic)
             tmpEntity.put()
+            image.createMiniature(key_name, 1)
         #self.savepassword = password
         #logging.info("1")
         self.redirect('/')
