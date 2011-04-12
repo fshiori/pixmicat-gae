@@ -33,13 +33,13 @@ TITLE = 'Pixmicat!-GAE' # 網頁標題
 #HOME = '/' # 回首頁的連結
 #TOP_LINKS = '' # 頁面右上方的額外連結，請直接以[<a href="網址" rel="_blank">名稱</a>]格式鍵入，如果不需要開新視窗可刪除rel一段
 #ADMIN_PASS = 'futaba' # 管理員密碼
-#IDSEED = 'id種' # 生成ID之隨機種子
+IDSEED = 'id種' # 生成ID之隨機種子
 
 # 管理員キャップ(Cap)設定 (啟用條件：開啟使用；名稱輸入識別名稱，E-mail輸入#啟動密碼)
-#CAP_ENABLE = 1 # 是否使用管理員キャップ (使用：1 不使用：0)
-#CAP_NAME = 'futaba' # 管理員キャップ識別名稱
-#CAP_PASS = 'futaba' # 管理員キャップ啟動密碼 (在E-mail一欄輸入#啟動密碼)
-#CAP_SUFFIX = '★' # 管理員キャップ後綴字元 (請務必有★以便程式防止偽造，或可自行修改程式的防偽造部份)
+CAP_ENABLE = 1 # 是否使用管理員キャップ (使用：1 不使用：0)
+CAP_NAME = 'futaba' # 管理員キャップ識別名稱
+CAP_PASS = 'futaba' # 管理員キャップ啟動密碼 (在E-mail一欄輸入#啟動密碼)
+CAP_SUFFIX = ' ★' # 管理員キャップ後綴字元 (請務必有★以便程式防止偽造，或可自行修改程式的防偽造部份)
 #CAP_ISHTML = 1 # 管理員キャップ啟動後內文是否接受HTML標籤 (是：1 否：0)
 
 # 功能切換

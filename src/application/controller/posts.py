@@ -12,9 +12,35 @@ from model.counter import Counter
 from model.pixmicat import Image
 from model.pixmicat import ResizeImage
 
-def _processUsername(username):
+def _tranStamp(i):
+    #a-z 97-122 -> 36-61
+    #0-9 48-57 -> 0-9
+    #A-Z 65-90 -> 10-35
+    i = i % 62
+    if i >= 0 and i <= 9:
+        return chr(i + 48)
+    elif i >= 10 and i <= 35:
+        return chr(i + 55)
+    elif i >= 36 and i <= 61:
+        return chr(i + 61)
+    return ''
+
+def _createHash(s):
+    key = s + settings.IDSEED
+    m = hashlib.md5()
+    m.update(key)
+    stamp = m.hexdigest() # 32
+    hash = ''
+    for i in range(10):
+        tmp = 0
+        for j in range(10):
+            tmp += ord(stamp[i+j])
+        hash += _tranStamp(tmp)
+    return hash[0:10]
+
+def _processUsername(username, email=''):
+    username = string.replace(username, '★', '')
     username = string.replace(username, '◆', '◇')
-    username = string.find(username,'#')
     tmp = username.split('#',1)
     username = tmp[0]
     stamp = ''
@@ -22,12 +48,15 @@ def _processUsername(username):
         stamp = tmp[1]
     if not stamp:
         return username
-    m = hashlib.md5()
-    m.update(stamp)
-    stamp = m.hexdigest()[0:10]
+    stamp = _createHash(stamp)
     username = '%s◆%s' % (username, stamp)
     return username
 
+def _processCap(username, email=''):
+    if not settings.CAP_ENABLE:
+        return username
+    
+    
 class PostsController(BaseController):
     
     def index(self):
