@@ -64,7 +64,6 @@ def _miniature(key_name, type=1):
             return data.pic
     if settings.STORAGE_RESIZE_PIC:
         entity = ResizeImage.get_by_key_name(key_name)
-        pic = entity.pic
     else:
         entity = None
     if not entity:
@@ -79,7 +78,7 @@ def _miniature(key_name, type=1):
     if settings.CACHE_RESIZE_PIC:
         data = pickle.dumps(entity)
         memcache.set(key_name, data, namespace='ResizeImage')
-    return pic
+    return entity.pic
     
 class ImageController(BaseController):
     
