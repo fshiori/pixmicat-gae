@@ -49,6 +49,12 @@ def _getImageSize(pic):
     height = pic.height
     return {'width':width, 'height':height}
 
+def getImageSize(pic):
+    return _getImageSize(pic)
+
+def createMiniature(key_name, type=1):
+    _miniature(key_name, type)
+
 def _miniature(key_name, type=1):
     #type 1 is Post, 2 is Reply
     if settings.CACHE_RESIZE_PIC:
@@ -58,6 +64,7 @@ def _miniature(key_name, type=1):
             return data.pic
     if settings.STORAGE_RESIZE_PIC:
         entity = ResizeImage.get_by_key_name(key_name)
+        pic = entity.pic
     else:
         entity = None
     if not entity:
@@ -72,7 +79,7 @@ def _miniature(key_name, type=1):
     if settings.CACHE_RESIZE_PIC:
         data = pickle.dumps(entity)
         memcache.set(key_name, data, namespace='ResizeImage')
-    return entity.pic
+    return pic
     
 class ImageController(BaseController):
     
