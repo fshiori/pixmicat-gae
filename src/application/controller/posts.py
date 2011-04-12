@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import cgi
 import hashlib
+import string
 
 from google.appengine.ext import db
 
 from gaeo.controller import BaseController
+from gaeo.session.memcache import MemcacheSession
 
 import settings
 from model.pixmicat import Pixmicat
@@ -43,19 +45,47 @@ def _processUsername(username, email=''):
     username = string.replace(username, '◆', '◇')
     tmp = username.split('#',1)
     username = tmp[0]
+    is_cap = _processCap(username, email)
+    cap = ''
+    if is_cap:
+        cap = settings.CAP_SUFFIX
     stamp = ''
     if len(tmp) > 1:
         stamp = tmp[1]
     if not stamp:
         return username
     stamp = _createHash(stamp)
-    username = '%s◆%s' % (username, stamp)
+    username = '%s◆%s%s' % (username, stamp, cap)
     return username
 
 def _processCap(username, email=''):
     if not settings.CAP_ENABLE:
-        return username
-    
+        return False
+    if email == '#' + settings.CAP_PASS and username == settings.CAP_NAME:
+        return True
+    return False
+
+def _processPostid(postip):
+    return _createHash(postip)[0:8]
+
+def _getCounter():
+    ind = Counter.get_by_key_name('Pixmicat')
+    if ind is None:
+        ind = Counter(key_name='Pixmicat')
+    ind.count += 1
+    ind.put()
+    return ind.count
+
+def _setPostCounter(type=1):
+    ind = Counter.get_by_key_name('Post')
+    if ind is None:
+        ind = Counter(key_name='Post')
+    if type == 1:
+        ind.count += 1
+    else:
+        ind.count -= 1
+    ind.put()
+    return ind.count
     
 class PostsController(BaseController):
     
@@ -63,10 +93,13 @@ class PostsController(BaseController):
         pass
     
     def new(self):
+        email = self.params.get('email')
+        if email:
+            email = email.encode('utf-8')
         username = self.params.get('name')
         if username:
             username = username.encode('utf-8')
-            username = _processUsername(username)
+            username = _processUsername(username, email)
         else:
             username = '無名氏'
         username = unicode(username, 'utf-8')
@@ -74,9 +107,7 @@ class PostsController(BaseController):
         postip = postip.encode('utf-8')
         postid = _processPostid(postip)
         postid = unicode(postid, 'utf-8')
-        email = self.params.get('email')
-        if email:
-            email = email.encode('utf-8')
+
         title = self.params.get('sub')
         if not title:
             title = '無標題'
@@ -99,7 +130,7 @@ class PostsController(BaseController):
             tags = u""
         password = self.params.get('pwd')
         if not password:
-            password = _createRandom()
+            password = '12345'
             session = MemcacheSession(self)
             session['password'] = password
             session.put()
