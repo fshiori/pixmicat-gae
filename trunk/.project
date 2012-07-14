@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>trunk</name>
+	<name>pixmicat-gae</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -18,7 +18,7 @@
 		<link>
 			<name>google_appengine</name>
 			<type>2</type>
-			<location>C:/Program Files/Google/google_appengine</location>
+			<location>/home/eric/utils/google_appengine</location>
 		</link>
 	</linkedResources>
 </projectDescription>
