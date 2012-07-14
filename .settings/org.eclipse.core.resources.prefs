@@ -1,4 +1,7 @@
-#Tue Apr 12 09:40:49 CST 2011
 eclipse.preferences.version=1
-encoding//src/application/controller/post.py=UTF-8
 encoding/<project>=UTF-8
+encoding/image.py=utf-8
+encoding/main.py=utf-8
+encoding/models.py=utf-8
+encoding/settings.py=utf-8
+encoding/urls.py=utf-8

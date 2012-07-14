@@ -1,0 +1,26 @@
+application: pixmicat-gae
+version: 2
+runtime: python27
+api_version: 1
+threadsafe: true
+
+libraries:
+- name: jinja2
+  version: latest
+ 
+- name: PIL
+  version: latest
+  
+inbound_services:
+- warmup
+
+handlers:
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
+- url: /statics
+  static_dir: statics
+  
+- url: /.*
+  script: main.app
