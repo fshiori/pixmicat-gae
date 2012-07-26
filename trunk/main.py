@@ -41,6 +41,14 @@ class MainPage(BaseHandler):
                 name = post.name
         self.render_response('index.html', **context)
         
-    def 
+    def post(self):
+        #self.request.get('content')
+        name = self.request.get('name')
+        email = self.request.get('email')
+        sub = self.request.get('sub')
+        com = self.request.get('com')
+        pwd = self.request.get('pwd')
+        category = self.request.get('category')
+        
 
 app = webapp2.WSGIApplication(routes=routes, debug=DEBUG, config=config)
