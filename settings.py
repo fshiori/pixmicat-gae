@@ -31,7 +31,7 @@ config['IMAGESHACK_API_KEY'] = '' # Only ImageShack need.(尚未實作)
 config['CACHE_PIC'] = 1 # 快取圖片 (啟動：1 關閉：0 , 僅在FILEIO_BACKEND為GAE_BlobProperty有效)
 
 #/*---- Part 2：板面各項細部功能設定 ----*/
-TITLE = 'Pixmicat!-GAE' # 網頁標題
+config['TITLE'] = 'Pixmicat!-GAE' # 網頁標題
 config['HOME'] = '/' # 回首頁的連結
 config['TOP_LINKS'] = '' # 頁面右上方的額外連結，請直接以[<a href="網址" rel="_blank">名稱</a>]格式鍵入，如果不需要開新視窗可刪除rel一段
 config['ADMIN_PASS'] = 'futaba' # 管理員密碼
