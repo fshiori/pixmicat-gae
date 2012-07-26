@@ -20,7 +20,7 @@ from google.appengine.api import images
 config = {}
 #/*---- Part 1：程式基本設定 ----*/
 # 伺服器常態設定
-DEBUG = False #除錯模式
+DEBUG = True #除錯模式
 config['TIME_ZONE'] = 'Asia/Taipei' # 時區設定 需遵照pytz時區設定標準
 config['PIXMICAT_LANGUAGE'] = 'zh_TW' # 語系語定(尚未實作)
 config['HTTP_UPLOAD_DIFF'] = 50 # HTTP上傳所有位元組與實際位元組之允許誤差值
