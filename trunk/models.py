@@ -18,12 +18,12 @@ class ThumbImage(BaseImage):
 
 class Pixmicat(db.Model):
     index = db.IntegerProperty(required=True) 
-    username = db.StringProperty()
+    name = db.StringProperty()
     postid = db.StringProperty()
     email = db.StringProperty()
     title = db.StringProperty()
     content = db.TextProperty()
-    pic = db.BooleanProperty()
+    image = db.BooleanProperty()
     tags = db.StringListProperty()
     password = db.StringProperty()
     createtime = db.DateTimeProperty(auto_now_add=True)

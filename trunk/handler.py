@@ -13,3 +13,8 @@ class BaseHandler(webapp2.RequestHandler):
         # Renders a template and writes the result to the response.
         rv = self.jinja2.render_template(_template, **context)
         self.response.write(rv)
+        
+    def render_template(self, _template, **context):
+        # Renders a template and writes the result to the response.
+        rv = self.jinja2.render_template(_template, **context)
+        return rv

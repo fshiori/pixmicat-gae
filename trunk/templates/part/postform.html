@@ -1,8 +1,8 @@
 <form action="/post/" method="post" enctype="multipart/form-data" onsubmit="return c();" id="postform_main">
 <div id="postform">
-{% if formtop %}{% endif %}
+{% if formtop %}[<span id="show" class="hide" onmouseover="showform();" onclick="showform();">投稿</span><span id="hide" class="show" onmouseover="hideform();" onclick="hideform();">隱藏表單</span>]{% endif %}
 <input type="hidden" name="mode" value="{{mode}}" />
-<input type="hidden" name="MAX_FILE_SIZE" value="{{MAX_FILE_SIZE}}" />
+<input type="hidden" name="MAX_FILE_SIZE" value="{{max_file_size}}" />
 {% if resto %}{% endif %}
 <div style="text-align: center;">
 <table cellpadding="1" cellspacing="1" id="postform_tbl" style="margin: 0px auto; text-align: left;">
@@ -10,15 +10,15 @@
 <tr><td class="Form_bg"><b>E-mail</b></td><td><input type="text" name="email" id="femail" size="28" value="" /></td></tr>
 <tr><td class="Form_bg"><b>標 題</b></td><td><input type="text" name="sub" id="fsub" size="28" value="" /><input type="submit" name="sendbtn" value="送 出" /></td></tr>
 <tr><td class="Form_bg"><b>內 文</b></td><td><textarea name="com" id="fcom" cols="48" rows="4" style="width: 400px; height: 80px;"></textarea></td></tr>
-{% if form_attechment_field %}<tr><td class="Form_bg"><b>附加圖檔</b></td><td><input type="file" name="upfile" id="fupfile" size="25" /><input class="hide" type="checkbox" name="reply" value="yes" />[<input type="checkbox" name="noimg" id="noimg" value="on" /><label for="noimg">無貼圖</label>]{% endif %}
-{% if form_contpost_field %}[<input type="checkbox" name="up_series" id="up_series" value="on" {#% if xxx%#}/><label for="up_series">連貼機能</label>]{% endif %}
+<tr><td class="Form_bg"><b>附加圖檔</b></td><td><input type="file" name="upfile" id="fupfile" size="25" /><input class="hide" type="checkbox" name="reply" value="yes" />[<input type="checkbox" name="noimg" id="noimg" value="on" /><label for="noimg">無貼圖</label>]
+{% if config.USE_UPSERIES %}[<input type="checkbox" name="up_series" id="up_series" value="on" {#% if xxx%#}/><label for="up_series">連貼機能</label>]{% endif %}
 {% if form_attechment_field %}</td></tr>{% endif %}
-{% if form_category_field %}<tr><td class="Form_bg"><b>類別標籤</b></td><td><input type="text" name="category" size="28" value="{{cat}}" /><small>(請以 , 逗號分隔多個標籤)</small></td></tr>{% endif %}
+{% if config.USE_CATEGORY %}<tr><td class="Form_bg"><b>類別標籤</b></td><td><input type="text" name="category" size="28" value="{{cat}}" /><small>(請以 , 逗號分隔多個標籤)</small></td></tr>{% endif %}
 <tr><td class="Form_bg"><b>刪除用密碼</b></td><td><input type="password" name="pwd" size="8" maxlength="8" value="" /><small>(刪除文章用。英數字8字元以內)</small></td></tr>
 {#$FORM_EXTRA_COLUMN#}
 <tr><td colspan="2">
 <div id="postinfo">
-<ul><li>可附加圖檔類型：%1$s，瀏覽器才能正常附加圖檔</li><li>附加圖檔最大上傳資料量為 {{config.MAX_KB}} KB。當回文時E-mail填入sage為不推文功能</li><li>當檔案超過寬 {% if resno %}{{config.MAX_RW}}{% else %}{{config.MAX_W}}{% endif %} 像素、高 {% if resno %}{{config.MAX_RH}}{% else %}{{config.MAX_H}}{% endif %} 像素時會自動縮小尺寸顯示</li>
+<ul><li>可附加圖檔類型：{{allow_upload_ext}}，瀏覽器才能正常附加圖檔</li><li>附加圖檔最大上傳資料量為 {{config.MAX_KB}} KB。當回文時E-mail填入sage為不推文功能</li><li>當檔案超過寬 {% if resno %}{{config.MAX_RW}}{% else %}{{config.MAX_W}}{% endif %} 像素、高 {% if resno %}{{config.MAX_RH}}{% else %}{{config.MAX_H}}{% endif %} 像素時會自動縮小尺寸顯示</li>
 {% if form_notice_storage_limit %}<li>目前附加圖檔使用量大小： %1$s KB / %2$s KB</li>{% endif %}
 {#$HOOKPOSTINFO#}
 {{config.ADDITION_INFO}}
@@ -32,4 +32,4 @@
 <hr />
 </div>
 </form>
-{% if formbottom %}<script type="text/javascript">hideform();</script>{% endif %}
+{% if config.USE_FLOATFORM %}<script type="text/javascript">hideform();</script>{% endif %}
