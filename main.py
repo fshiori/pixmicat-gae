@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+sys.path.insert(0, 'babel.zip')
+
 import webapp2
 
 from urls import routes
