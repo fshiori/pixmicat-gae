@@ -23,12 +23,12 @@ config = {}
 DEBUG = True #除錯模式
 config['TIME_ZONE'] = 'Asia/Taipei' # 時區設定 需遵照pytz時區設定標準
 config['PIXMICAT_LANGUAGE'] = 'zh_TW' # 語系語定(尚未實作)
-config['HTTP_UPLOAD_DIFF'] = 50 # HTTP上傳所有位元組與實際位元組之允許誤差值
+#config['HTTP_UPLOAD_DIFF'] = 50 # HTTP上傳所有位元組與實際位元組之允許誤差值
 
 # 圖片FileIO設定
-config['FILEIO_BACKEND'] = '' # 圖片FileIO後端指定 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'(尚未實作)
-config['IMAGESHACK_API_KEY'] = '' # Only ImageShack need.(尚未實作)
-config['CACHE_PIC'] = 1 # 快取圖片 (啟動：1 關閉：0 , 僅在FILEIO_BACKEND為GAE_BlobProperty有效)
+#config['FILEIO_BACKEND'] = '' # 圖片FileIO後端指定 'GAE_BlobProperty', 'GAE_BlobStore' or 'ImageShack'(尚未實作)
+#config['IMAGESHACK_API_KEY'] = '' # Only ImageShack need.(尚未實作)
+config['CACHE_IMAGE'] = 1 # 快取圖片 (啟動：1 關閉：0 , 僅在FILEIO_BACKEND為GAE_BlobProperty有效)
 
 #/*---- Part 2：板面各項細部功能設定 ----*/
 config['TITLE'] = 'Pixmicat!-GAE' # 網頁標題
@@ -72,7 +72,7 @@ config['BAD_FILEMD5'] = ['dummy', 'dummy2'] # 限制上傳附加圖檔之MD5檢�
 config['MAX_KB'] = 1024 # 附加圖檔上傳容量限制KB (GAE內定為最高1MB)
 config['STORAGE_LIMIT'] = 1 # 附加圖檔總容量限制功能 (啟動：1 關閉：0)
 config['STORAGE_MAX'] = 30000 # 附加圖檔總容量限制上限大小 (單位：KB)
-config['ALLOW_UPLOAD_EXT'] = 'GIF|JPG|PNG|BMP|SWF' # 接受之附加圖檔副檔名 (送出前表單檢查用，用 | 分隔)
+config['ALLOW_UPLOAD_EXT'] = 'GIF|JPG|PNG|BMP' # 接受之附加圖檔副檔名 (送出前表單檢查用，用 | 分隔)
 
 # 連續投稿時間限制
 config['RENZOKU'] = 60 # 連續投稿間隔秒數

@@ -1,8 +1,9 @@
 eclipse.preferences.version=1
 encoding//pixmicat-gae/image.py=utf-8
-encoding//pixmicat-gae/index.py=utf-8
+encoding//pixmicat-gae/main.py=utf-8
 encoding//pixmicat-gae/models.py=utf-8
-encoding//pixmicat-gae/reply.py=utf-8
+encoding//pixmicat-gae/posts.py=utf-8
+encoding//pixmicat-gae/utils.py=utf-8
 encoding/<project>=UTF-8
 encoding/handler.py=utf-8
 encoding/main.py=utf-8
